@@ -100,8 +100,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             val resultOfSudoku = GetSudokuSolution (arr)
-            Toast.makeText(applicationContext,"${resultOfSudoku.flag}",Toast.LENGTH_SHORT).show()
-
             if( resultOfSudoku.flag ==true )
             {
                 Toast.makeText(applicationContext,"you can't solve it ",Toast.LENGTH_SHORT).show()
