@@ -72,9 +72,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickSolve (){
-        if(numberInserted < 9 )
+        if(numberInserted < 23 )
         {
-            Toast.makeText(applicationContext,"at least should insert 9 number ",Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,"at least should insert 23 number ",Toast.LENGTH_SHORT).show()
         }
         else
         {
