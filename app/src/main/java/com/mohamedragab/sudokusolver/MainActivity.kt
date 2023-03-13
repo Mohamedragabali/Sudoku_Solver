@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     var wherePointerStand :TextView ?= null
     lateinit var resetBT :Button
     lateinit var solveBT :Button
+    var numberInserted = 0
     val allIds= listOf(R.id.indx00 ,R.id.indx01 ,R.id.indx02 ,R.id.indx03 ,R.id.indx04
         ,R.id.indx05,R.id.indx06 ,R.id.indx07 ,R.id.indx08 ,R.id.indx10 ,R.id.indx11
         ,R.id.indx12,R.id.indx13 ,R.id.indx14 ,R.id.indx15 ,R.id.indx16 ,R.id.indx17
@@ -71,46 +72,54 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickSolve (){
-       var arr :Array<Array<Int>> = arrayOf(
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-           arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
-       )
-       var indxAllGridTextView = 0
-       for(row in 0..8 ) {
-           for (col in 0..8) {
-               val value =  allGridTextView[indxAllGridTextView++].text.toString()
-               if(value != "")
-               {
-                   arr[row][col] = value.toInt()
-               }
-           }
-       }
-
-        val resultOfSudoku = GetSudokuSolution (arr)
-        if( resultOfSudoku.flag ==true )
+        if(numberInserted < 9 )
         {
-            Toast.makeText(applicationContext,"you can't solve it ",Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(applicationContext,"at least should insert 9 number ",Toast.LENGTH_SHORT).show()
         }
-        else{
-            var indxAllGridLayout = 0
-            var indxSolution = 0
-            for (i in 0..8) {
-                for (j in 0..8) {
-                    allGridTextView[indxAllGridLayout++].text = resultOfSudoku.solution[indxSolution++].toString()
+        else
+        {
+            var arr :Array<Array<Int>> = arrayOf(
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
+            )
+            var indxAllGridTextView = 0
+            for(row in 0..8 ) {
+                for (col in 0..8) {
+                    val value =  allGridTextView[indxAllGridTextView++].text.toString()
+                    if(value != "")
+                    {
+                        arr[row][col] = value.toInt()
+                    }
+                }
+            }
+            val resultOfSudoku = GetSudokuSolution (arr)
+            Toast.makeText(applicationContext,"${resultOfSudoku.flag}",Toast.LENGTH_SHORT).show()
+
+            if( resultOfSudoku.flag ==true )
+            {
+                Toast.makeText(applicationContext,"you can't solve it ",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                var indxAllGridLayout = 0
+                var indxSolution = 0
+                for (i in 0..8) {
+                    for (j in 0..8) {
+                        allGridTextView[indxAllGridLayout++].text = resultOfSudoku.solution[indxSolution++].toString()
+                    }
                 }
             }
         }
-
     }
     fun onClickReset (){
+        wherePointerStand = null
+        numberInserted = 0
         for(i in allGridTextView )
         {
             i.text = ""
@@ -119,13 +128,14 @@ class MainActivity : AppCompatActivity() {
    fun onClickText(v: View){
         wherePointerStand = v as TextView
     }
-    public fun onClickButton(v: View){
+    public fun onClickNumber(v: View){
         if(wherePointerStand == null )
         {
             Toast.makeText(applicationContext,"please select place ",Toast.LENGTH_SHORT).show()
         }
         else
         {
+            numberInserted++
             wherePointerStand!!.text = "${(v as TextView).text.toString()}"
         }
     }
@@ -159,9 +169,9 @@ class GetSudokuSolution( arr: Array<Array<Int>>) {
 
             if (i == j && i == 8) {
                 val lis = mutableListOf<Int>()
-                for (i in arr) {
-                    for (j in i) {
-                        lis.add(j)
+                for (a in arr) {
+                    for (b in a) {
+                        lis.add(b)
                     }
                 }
                 solution = lis
