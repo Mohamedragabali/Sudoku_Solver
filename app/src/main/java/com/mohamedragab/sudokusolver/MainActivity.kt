@@ -11,7 +11,9 @@ import android.widget.TextView
 import android.widget.Toast
 
 private val allGridTextView :MutableList<TextView> = mutableListOf()
+private const val TheMinimumNumber = 17
 class MainActivity : AppCompatActivity() {
+
     var wherePointerStand :TextView ?= null
     lateinit var resetBT :Button
     lateinit var solveBT :Button
@@ -72,9 +74,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickSolve (){
-        if(numberInserted < 23 )
+        if(numberInserted < 17 )
         {
-            Toast.makeText(applicationContext,"at least should insert 23 number ",Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,"at least should insert 17 number ",Toast.LENGTH_SHORT).show()
         }
         else
         {
@@ -116,6 +118,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
     fun onClickReset (){
+        if(wherePointerStand != null )
+        {
+            wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock)
+        }
         wherePointerStand = null
         numberInserted = 0
         for(i in allGridTextView )
@@ -124,17 +130,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
    fun onClickText(v: View){
-        wherePointerStand = v as TextView
+       v as TextView
+       if(wherePointerStand == null )
+       {
+           wherePointerStand = v
+           wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock_withcolor)
+       }
+       else
+       {
+           wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock)
+           wherePointerStand = v
+           wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock_withcolor)
+       }
+
+
     }
-    public fun onClickNumber(v: View){
+    fun onClickNumber(v: View){
         if(wherePointerStand == null )
         {
             Toast.makeText(applicationContext,"please select place ",Toast.LENGTH_SHORT).show()
         }
         else
         {
-            numberInserted++
-            wherePointerStand!!.text = "${(v as TextView).text.toString()}"
+            if( (v as TextView).text.toString()== "x")
+            {
+                numberInserted--
+                wherePointerStand!!.text = ""
+
+            }
+            else
+            {
+                numberInserted++
+                wherePointerStand!!.text = "${(v as TextView).text.toString()}"
+            }
+
         }
     }
 }

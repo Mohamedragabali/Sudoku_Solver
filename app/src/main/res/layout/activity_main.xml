@@ -12,12 +12,18 @@
         android:rowCount="9">
     </GridLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:padding="8dp"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:layout_gravity="bottom">
         <TextView
             android:layout_width="32dp"
             android:layout_height="60dp"
@@ -113,32 +119,52 @@
             android:onClick="onClickNumber"
             android:text="9"
             android:textSize="40dp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:onClick="onClickNumber"
+            android:text="x"
+            android:textSize="40dp"/>
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp">
-        <Button
+        android:layout_height="64dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp">
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/resetBT"
-            android:layout_width="32dp"
+            android:layout_width="24dp"
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="reset"
+            android:background="@drawable/button_style"
             android:textColor="#121212"
             android:textSize="18dp"/>
-        <Button
+        <View
+            android:layout_width="16dp"
+            android:layout_height="0dp"/>
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/solveBT"
-            android:layout_width="32dp"
+            android:layout_width="24dp"
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="solve"
+            android:background="@drawable/button_style"
             android:textColor="#121212"
             android:textSize="18dp"/>
-
-
-
-
     </LinearLayout>
 
 </LinearLayout>
