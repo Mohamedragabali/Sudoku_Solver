@@ -1,7 +1,6 @@
 package com.mohamedragab.sudokusolver
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -20,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     var foundSolution:Boolean = false
     lateinit var listOfCorrectNumberInSudoku : List<Int>
     var numberInserted = 0
+    var isCellsItOk = true
     val allIds= listOf(R.id.indx00 ,R.id.indx01 ,R.id.indx02 ,R.id.indx03 ,R.id.indx04
         ,R.id.indx05,R.id.indx06 ,R.id.indx07 ,R.id.indx08 ,R.id.indx10 ,R.id.indx11
         ,R.id.indx12,R.id.indx13 ,R.id.indx14 ,R.id.indx15 ,R.id.indx16 ,R.id.indx17
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         ,R.id.indx78,R.id.indx80 ,R.id.indx81 ,R.id.indx82 ,R.id.indx83 ,R.id.indx84
         ,R.id.indx85,R.id.indx86 ,R.id.indx87 ,R.id.indx88 ,
     )
-    var arr :Array<Array<Int>> = arrayOf(
+    var allCell :Array<Array<Int>> = arrayOf(
         arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
         arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
         arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -90,31 +90,13 @@ class MainActivity : AppCompatActivity() {
         {
             Toast.makeText(applicationContext,"at least should insert 17 number ",Toast.LENGTH_SHORT).show()
         }
+        else if (isCellsItOk == false  )
+        {
+            Toast.makeText(applicationContext,"you should delete cell has red color. It wrong",Toast.LENGTH_SHORT).show()
+        }
         else
         {
-            var arr :Array<Array<Int>> = arrayOf(
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-                arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
-            )
-            var indxAllGridTextView = 0
-            for(row in 0..8 ) {
-                for (col in 0..8) {
-                    val value =  allGridTextView[indxAllGridTextView++].text.toString()
-                    if(value != "")
-                    {
-                        arr[row][col] = value.toInt()
-                    }
-                }
-            }
-
-            runSoudkoSolver(arr)
+            runSoudkoSolver(allCell)
             if(listOfCorrectNumberInSudoku.isEmpty() == true )
             {
                 Toast.makeText(applicationContext,"you can't. \nThe entry data wrong",Toast.LENGTH_SHORT).show()
@@ -127,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                     for (j in 0..8) {
                         val lastElementInTextView = allGridTextView[indxAllGridLayout]
                         val newElementInTextView = listOfCorrectNumberInSudoku.get(indxSolution)
+                        allCell[i][j]=newElementInTextView
                         if(lastElementInTextView.text.toString() == "") {
                             val textColor = ContextCompat.getColor(this, R.color.Grean)
                             lastElementInTextView.setTextColor(textColor)
@@ -140,6 +123,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun onClickReset (){
+        allCell  = arrayOf(
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
+        )
         if(wherePointerStand != null )
         {
             wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock)
@@ -169,6 +163,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
     @SuppressLint("ResourceAsColor")
     fun onClickNumber(v: View){
         v as TextView
@@ -176,18 +171,52 @@ class MainActivity : AppCompatActivity() {
         {
             Toast.makeText(applicationContext,"please select place ",Toast.LENGTH_SHORT).show()
         }
+        else if (isCellsItOk == false )
+        {
+            if(v.text.toString() == "x")
+            {
+                isCellsItOk =true
+                val idWherePointerStand = wherePointerStand!!.context.resources.getResourceEntryName(wherePointerStand!!.id)
+                val indxRow = idWherePointerStand.get(4).digitToInt()
+                val indxColumn = idWherePointerStand.get(5).digitToInt()
+                val textColor = ContextCompat.getColor(this, R.color.black)
+                wherePointerStand!!.setTextColor(textColor)
+                allCell[indxRow][indxColumn] = 0
+                numberInserted--
+                wherePointerStand!!.text = ""
+            }
+            else
+            {
+                Toast.makeText(applicationContext,"you should delete cell has red color. It wrong",Toast.LENGTH_SHORT).show()
+
+            }
+        }
         else
         {
+            val idWherePointerStand = wherePointerStand!!.context.resources.getResourceEntryName(wherePointerStand!!.id)
+            val indxRow = idWherePointerStand.get(4).digitToInt()
+            val indxColumn = idWherePointerStand.get(5).digitToInt()
             if( v.text.toString()== "x")
             {
+                val textColor = ContextCompat.getColor(this, R.color.black)
+                wherePointerStand!!.setTextColor(textColor)
+                allCell[indxRow][indxColumn] = 0
                 numberInserted--
                 wherePointerStand!!.text = ""
 
             }
             else
             {
+                allCell[indxRow][indxColumn] = v.text.toString().toInt()
                 numberInserted++
                 wherePointerStand!!.text = "${v.text}"
+                val isNotRebetetdInXY  = checkXAndYLine(allCell , indxRow , indxColumn ) && checkRectangle (allCell , indxRow , indxColumn )
+                if(isNotRebetetdInXY == false )
+                {
+                    val textColor = ContextCompat.getColor(this, R.color.red)
+                    wherePointerStand!!.setTextColor(textColor)
+                    isCellsItOk = false
+                }
 
             }
 
