@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="hh">500dp</dimen>
-    <dimen name="size">12sp</dimen>
+    <dimen name="sizeNumberButton">56dp</dimen>
+    <dimen name="buttonWidthSize">180dp</dimen>
+    <dimen name="buttonHeightSize">48dp</dimen>
+
+
+    <dimen name="largTextSize">32sp</dimen>
+    <dimen name="midTextSize">18sp</dimen>
+    <dimen name="minTextSize">12sp</dimen>
 </resources>

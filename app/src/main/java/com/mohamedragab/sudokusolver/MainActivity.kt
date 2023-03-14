@@ -11,14 +11,14 @@ import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-
-private val allGridTextView :MutableList<TextView> = mutableListOf()
-private const val TheMinimumNumber = 17
 class MainActivity : AppCompatActivity() {
-
+    private val allGridTextView :MutableList<TextView> = mutableListOf()
+    private val theMinimumNumber = 17
     var wherePointerStand :TextView ?= null
     lateinit var resetBT :Button
     lateinit var solveBT :Button
+    var foundSolution:Boolean = false
+    lateinit var listOfCorrectNumberInSudoku : List<Int>
     var numberInserted = 0
     val allIds= listOf(R.id.indx00 ,R.id.indx01 ,R.id.indx02 ,R.id.indx03 ,R.id.indx04
         ,R.id.indx05,R.id.indx06 ,R.id.indx07 ,R.id.indx08 ,R.id.indx10 ,R.id.indx11
@@ -34,6 +34,17 @@ class MainActivity : AppCompatActivity() {
         ,R.id.indx72,R.id.indx73 ,R.id.indx74 ,R.id.indx75 ,R.id.indx76 ,R.id.indx77
         ,R.id.indx78,R.id.indx80 ,R.id.indx81 ,R.id.indx82 ,R.id.indx83 ,R.id.indx84
         ,R.id.indx85,R.id.indx86 ,R.id.indx87 ,R.id.indx88 ,
+    )
+    var arr :Array<Array<Int>> = arrayOf(
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
     )
     @SuppressLint("ResourceType", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                 allGridTextView.add(newtextView.findViewById(allIds[i++]))
                 val textColor = ContextCompat.getColor(this, R.color.black)
                 newtextView.setTextColor(textColor)
-                newtextView.textSize = resources.getDimension(R.dimen.size)
+                newtextView.textSize = resources.getDimension(R.dimen.minTextSize)
                 newtextView.setBackgroundResource(R.drawable.textview_line_strock)
                 mygrid.addView(newtextView)
             }
@@ -74,8 +85,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ResourceAsColor")
-    fun onClickSolve (){
-        if(numberInserted < 17 )
+    private fun onClickSolve (){
+        if(numberInserted < theMinimumNumber )
         {
             Toast.makeText(applicationContext,"at least should insert 17 number ",Toast.LENGTH_SHORT).show()
         }
@@ -102,31 +113,33 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            val resultOfSudoku = GetSudokuSolution (arr)
-            if( resultOfSudoku.flag ==true )
+
+            runSoudkoSolver(arr)
+            if(listOfCorrectNumberInSudoku.isEmpty() == true )
             {
-                Toast.makeText(applicationContext,"you can't solve it ",Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext,"you can't. \nThe entry data wrong",Toast.LENGTH_SHORT).show()
             }
-            else{
+            else
+            {
                 var indxAllGridLayout = 0
                 var indxSolution = 0
                 for (i in 0..8) {
                     for (j in 0..8) {
                         val lastElementInTextView = allGridTextView[indxAllGridLayout]
-                        val newElementInTextView =resultOfSudoku.solution[indxSolution]
+                        val newElementInTextView = listOfCorrectNumberInSudoku.get(indxSolution)
                         if(lastElementInTextView.text.toString() == "") {
                             val textColor = ContextCompat.getColor(this, R.color.Grean)
                             lastElementInTextView.setTextColor(textColor)
                             lastElementInTextView.text = newElementInTextView.toString()
                         }
-                            indxAllGridLayout++
-                            indxSolution++
+                        indxAllGridLayout++
+                        indxSolution++
                     }
                 }
             }
         }
     }
-    fun onClickReset (){
+    private fun onClickReset (){
         if(wherePointerStand != null )
         {
             wherePointerStand!!.setBackgroundResource(R.drawable.textview_line_strock)
@@ -135,10 +148,12 @@ class MainActivity : AppCompatActivity() {
         numberInserted = 0
         for(i in allGridTextView )
         {
+            val textColor = ContextCompat.getColor(this, R.color.black)
+            i.setTextColor(textColor)
             i.text = ""
         }
     }
-   fun onClickText(v: View){
+    private fun onClickText(v: View){
        v as TextView
        if(wherePointerStand == null )
        {
@@ -172,27 +187,20 @@ class MainActivity : AppCompatActivity() {
             else
             {
                 numberInserted++
-                wherePointerStand!!.text = "${v.text.toString()}"
+                wherePointerStand!!.text = "${v.text}"
 
             }
 
         }
     }
 
-
-}
-
-class GetSudokuSolution( arr: Array<Array<Int>>) {
-    lateinit var solution: List<Int>
-    var flag = true
-
-    init {
-        this.excute(arr, 0, 0)
-        if (flag) solution = listOf()
+    private fun runSoudkoSolver(arr: Array<Array<Int>>){
+        listOfCorrectNumberInSudoku = listOf()
+        foundSolution = false
+        excute(arr, 0, 0)
     }
-
     private fun excute(arr: Array<Array<Int>>, i: Int, j: Int) {
-        if (flag == false) return
+        if(foundSolution == true  ) return
         if (i == 9 || j == 9) return
         else if (arr[i][j] == 0) {
             arr[i][j] = 1; excute(arr, i, j)
@@ -207,7 +215,6 @@ class GetSudokuSolution( arr: Array<Array<Int>>) {
             arr[i][j] = 0
             return
         } else if (checkRectangle(arr, i, j) && checkXAndYLine(arr, i, j)) {
-
             if (i == j && i == 8) {
                 val lis = mutableListOf<Int>()
                 for (a in arr) {
@@ -215,8 +222,8 @@ class GetSudokuSolution( arr: Array<Array<Int>>) {
                         lis.add(b)
                     }
                 }
-                solution = lis
-                flag = false
+                foundSolution = true
+                listOfCorrectNumberInSudoku = lis
                 return
             }
             excute(arr, i, j + 1)
@@ -266,4 +273,5 @@ class GetSudokuSolution( arr: Array<Array<Int>>) {
         }
         return true
     }
+
 }
