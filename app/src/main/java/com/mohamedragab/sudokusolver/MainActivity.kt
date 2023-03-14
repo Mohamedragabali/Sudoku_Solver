@@ -1,6 +1,7 @@
 package com.mohamedragab.sudokusolver
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 private val allGridTextView :MutableList<TextView> = mutableListOf()
 private const val TheMinimumNumber = 17
@@ -50,22 +52,23 @@ class MainActivity : AppCompatActivity() {
         {
             for(col in 0..8 )
             {
-                var cell =  TextView(this)
+                var newtextView =  TextView(this)
                 var params = GridLayout.LayoutParams()
                 params.width = 0
                 params.height = GridLayout.LayoutParams.WRAP_CONTENT
                 params.columnSpec = GridLayout.spec(col , 1f )
                 params.rowSpec =GridLayout.spec(row ,1f)
-                cell.layoutParams = params
-                cell.gravity = Gravity.CENTER
-                cell.setOnClickListener {onClickText(cell )}
-                cell.setText("")
-                cell.id = allIds[i]
-                allGridTextView.add(cell.findViewById(allIds[i++]))
-                cell.setTextColor(R.color.black)
-                cell.textSize = resources.getDimension(R.dimen.size)
-                cell.setBackgroundResource(R.drawable.textview_line_strock)
-                mygrid.addView(cell)
+                newtextView.layoutParams = params
+                newtextView.gravity = Gravity.CENTER
+                newtextView.setOnClickListener {onClickText(newtextView )}
+                newtextView.setText("")
+                newtextView.id = allIds[i]
+                allGridTextView.add(newtextView.findViewById(allIds[i++]))
+                val textColor = ContextCompat.getColor(this, R.color.black)
+                newtextView.setTextColor(textColor)
+                newtextView.textSize = resources.getDimension(R.dimen.size)
+                newtextView.setBackgroundResource(R.drawable.textview_line_strock)
+                mygrid.addView(newtextView)
             }
         }
 
@@ -73,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("ResourceAsColor")
     fun onClickSolve (){
         if(numberInserted < 17 )
         {
@@ -111,7 +115,15 @@ class MainActivity : AppCompatActivity() {
                 var indxSolution = 0
                 for (i in 0..8) {
                     for (j in 0..8) {
-                        allGridTextView[indxAllGridLayout++].text = resultOfSudoku.solution[indxSolution++].toString()
+                        val lastElementInTextView = allGridTextView[indxAllGridLayout]
+                        val newElementInTextView =resultOfSudoku.solution[indxSolution]
+                        if(lastElementInTextView.text.toString() == "") {
+                            val textColor = ContextCompat.getColor(this, R.color.Grean)
+                            lastElementInTextView.setTextColor(textColor)
+                            lastElementInTextView.text = newElementInTextView.toString()
+                        }
+                            indxAllGridLayout++
+                            indxSolution++
                     }
                 }
             }
@@ -145,14 +157,16 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+    @SuppressLint("ResourceAsColor")
     fun onClickNumber(v: View){
+        v as TextView
         if(wherePointerStand == null )
         {
             Toast.makeText(applicationContext,"please select place ",Toast.LENGTH_SHORT).show()
         }
         else
         {
-            if( (v as TextView).text.toString()== "x")
+            if( v.text.toString()== "x")
             {
                 numberInserted--
                 wherePointerStand!!.text = ""
@@ -161,7 +175,8 @@ class MainActivity : AppCompatActivity() {
             else
             {
                 numberInserted++
-                wherePointerStand!!.text = "${(v as TextView).text.toString()}"
+                wherePointerStand!!.text = "${v.text.toString()}"
+
             }
 
         }
