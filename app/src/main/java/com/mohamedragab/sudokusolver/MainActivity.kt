@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val mygrid = findViewById<GridLayout>(R.id.myGrid)
 
-
         resetBT = findViewById(R.id.resetBT)
         solveBT = findViewById(R.id.solveBT)
         resetBT.setOnClickListener{onClickReset()}
@@ -71,8 +70,6 @@ class MainActivity : AppCompatActivity() {
                 mygrid.addView(newtextView)
             }
         }
-
-
 
     }
 
@@ -181,6 +178,8 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+
 }
 
 class GetSudokuSolution( arr: Array<Array<Int>>) {
